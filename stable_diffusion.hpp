@@ -797,7 +797,7 @@ inline static std::pair<ncnn::Mat, ncnn::Mat> prompt_solver( std::string const& 
     return std::make_pair( prompt_solve( tokenizer_token2idx, net, prompt_positive ), prompt_solve( tokenizer_token2idx, net, prompt_negative ) );
 }
 
-inline void stable_diffusion( std::string positive_prompt = std::string{}, std::string output_png_path = std::string{}, int step = 30, int seed = 42, std::string negative_prompt = std::string{} )
+inline void stable_diffusion( std::string positive_prompt = std::string{}, std::string output_png_path = std::string{}, int step = 30, int seed = 42, std::string negative_prompt = std::string{}, bool upscale = true )
 {
     if ( positive_prompt.empty() )
         positive_prompt =
@@ -822,7 +822,8 @@ inline void stable_diffusion( std::string positive_prompt = std::string{}, std::
     std::cout << "----------------[decode]------------------" << std::endl;
     ncnn::Mat x_samples_ddim = decoder_solver( sample );
     std::cout << "----------------[4x]--------------------" << std::endl;
-    // x_samples_ddim = esr4x( x_samples_ddim );
+    if (upscale)
+        x_samples_ddim = esr4x( x_samples_ddim );
     std::cout << "----------------[save]--------------------" << std::endl;
     {
         std::vector<std::uint8_t> buffer;
